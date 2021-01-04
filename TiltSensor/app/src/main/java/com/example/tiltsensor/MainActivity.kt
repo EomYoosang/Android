@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         getSystemService(Context.SENSOR_SERVICE) as SensorManager
     }
 
+    private lateinit var tiltView: TiltView
+
     override fun onResume(){
         super.onResume()
         sensorManager.registerListener(this,
@@ -34,7 +36,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         //가로모드 고정
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        tiltView = TiltView(this)
+        setContentView(tiltView)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -45,6 +49,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         event?.let{
             Log.d("MainActivity","onSensorChanged: "+
                     "x : ${event.values[0]}, y : ${event.values[1]}, z : ${event.values[2]}")
+
+            tiltView.onSensorEvent(event)
         }
+    }
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
     }
 }
